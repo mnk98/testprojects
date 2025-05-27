@@ -34,8 +34,10 @@ import javax.inject.Inject
  * UiState for the Add/Edit screen
  */
 data class AddEditTaskUiState(
-    val title: String = "",
-    val description: String = "",
+    val name: String = "",
+    val address: String = "",
+    val amount: String = "",
+    val date: String = "",
     val isTaskCompleted: Boolean = false,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
@@ -67,7 +69,7 @@ class AddEditTaskViewModel @Inject constructor(
 
     // Called when clicking on fab.
     fun saveTask() {
-        if (uiState.value.title.isEmpty() || uiState.value.description.isEmpty()) {
+        if (uiState.value.name.isEmpty() || uiState.value.address.isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_task_message)
             }
@@ -89,18 +91,18 @@ class AddEditTaskViewModel @Inject constructor(
 
     fun updateTitle(newTitle: String) {
         _uiState.update {
-            it.copy(title = newTitle)
+            it.copy(name = newTitle)
         }
     }
 
     fun updateDescription(newDescription: String) {
         _uiState.update {
-            it.copy(description = newDescription)
+            it.copy(address = newDescription)
         }
     }
 
     private fun createNewTask() = viewModelScope.launch {
-        taskRepository.createTask(uiState.value.title, uiState.value.description)
+        taskRepository.createTask(uiState.value.name, uiState.value.address)
         _uiState.update {
             it.copy(isTaskSaved = true)
         }
@@ -113,8 +115,8 @@ class AddEditTaskViewModel @Inject constructor(
         viewModelScope.launch {
             taskRepository.updateTask(
                 taskId,
-                title = uiState.value.title,
-                description = uiState.value.description,
+                title = uiState.value.name,
+                description = uiState.value.address,
             )
             _uiState.update {
                 it.copy(isTaskSaved = true)
@@ -129,14 +131,16 @@ class AddEditTaskViewModel @Inject constructor(
         viewModelScope.launch {
             taskRepository.getTask(taskId).let { task ->
                 if (task != null) {
-                    _uiState.update {
-                        it.copy(
-                            title = task.title,
-                            description = task.description,
-                            isTaskCompleted = task.isCompleted,
-                            isLoading = false
-                        )
-                    }
+//                    _uiState.update {
+//                        it.copy(
+//                            name = task.name,
+//                            address = task.address,
+//                            amount = task.amount,
+//                            date = task.date,
+//                            isTaskCompleted = task.isCompleted,
+//                            isLoading = false
+//                        )
+//                    }
                 } else {
                     _uiState.update {
                         it.copy(isLoading = false)

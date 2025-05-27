@@ -80,8 +80,10 @@ fun AddEditTaskScreen(
 
         AddEditTaskContent(
             loading = uiState.isLoading,
-            title = uiState.title,
-            description = uiState.description,
+            name = uiState.name,
+            address = uiState.address,
+            amount = uiState.amount,
+            date = uiState.date,
             onTitleChanged = viewModel::updateTitle,
             onDescriptionChanged = viewModel::updateDescription,
             modifier = Modifier.padding(paddingValues)
@@ -108,8 +110,10 @@ fun AddEditTaskScreen(
 @Composable
 private fun AddEditTaskContent(
     loading: Boolean,
-    title: String,
-    description: String,
+    name: String,
+    address: String,
+    amount: String,
+    date: String,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -136,12 +140,12 @@ private fun AddEditTaskContent(
                 cursorColor = MaterialTheme.colorScheme.onSecondary
             )
             OutlinedTextField(
-                value = title,
+                value = name,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = onTitleChanged,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.title_hint),
+                        text = stringResource(id = R.string.name_hint),
                         style = MaterialTheme.typography.headlineSmall
                     )
                 },
@@ -151,11 +155,26 @@ private fun AddEditTaskContent(
                 colors = textFieldColors
             )
             OutlinedTextField(
-                value = description,
+                value = address,
                 onValueChange = onDescriptionChanged,
-                placeholder = { Text(stringResource(id = R.string.description_hint)) },
+                placeholder = { Text(stringResource(id = R.string.address_hint)) },
                 modifier = Modifier
-                    .height(350.dp)
+                    .fillMaxWidth(),
+                colors = textFieldColors
+            )
+            OutlinedTextField(
+                value = amount,
+                onValueChange = onDescriptionChanged,
+                placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = textFieldColors
+            )
+            OutlinedTextField(
+                value = date,
+                onValueChange = onDescriptionChanged,
+                placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                modifier = Modifier
                     .fillMaxWidth(),
                 colors = textFieldColors
             )
