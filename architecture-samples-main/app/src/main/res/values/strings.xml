@@ -43,7 +43,7 @@
     <string name="statistics_title">Statistics</string>
     <string name="add_contributor">Add Contributor</string>
     <string name="add_expense">Add Expense</string>
-    <string name="statistics_no_tasks">You have no tasks.</string>
+    <string name="statistics_no_tasks">You no contributors and expense for this month</string>
     <string name="statistics_active_tasks">Active tasks: %.1f%%</string>
     <string name="statistics_completed_tasks">Completed tasks: %.1f%%</string>
     <string name="statistics_error">Error loading statistics.</string>
@@ -58,10 +58,11 @@
     <string name="nav_all">All</string>
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
-    <string name="label_all">All Tasks</string>
+    <string name="label_all">All Contributors</string>
     <string name="label_active">Active Tasks</string>
     <string name="label_completed">Completed Tasks</string>
     <string name="no_tasks_all">You have no tasks!</string>
+    <string name="no_contributors_all">You have no contributors!</string>
     <string name="no_tasks_active">You have no active tasks!</string>
     <string name="no_tasks_completed">You have no completed tasks!</string>
     <string name="refresh">Refresh</string>
