@@ -28,45 +28,45 @@ import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import com.example.android.architecture.blueprints.todoapp.expense.data.Expense
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
 
-@Composable
-fun ExpenseListContent(
-    loading: Boolean,
-    expenses: List<Expense>,
-    @StringRes currentFilteringLabel: Int,
-    @StringRes noTasksLabel: Int,
-    @DrawableRes noTasksIconRes: Int,
-    onRefresh: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LoadingContent(
-        loading = loading,
-        empty = expenses.isEmpty() && !loading,
-        emptyContent = { ExpenseEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
-        onRefresh = onRefresh
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-        ) {
-            Text(
-                text = stringResource(currentFilteringLabel),
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
-                    vertical = dimensionResource(id = R.dimen.vertical_margin)
-                ),
-                style = MaterialTheme.typography.headlineSmall
-            )
-            LazyColumn {
-                items(expenses) { expense ->
-                    ExpenseItem(
-                        expense = expense
-                    )
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun ExpenseListContent(
+//    loading: Boolean,
+//    expenses: List<Expense>,
+//    @StringRes currentFilteringLabel: Int,
+//    @StringRes noTasksLabel: Int,
+//    @DrawableRes noTasksIconRes: Int,
+//    onRefresh: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    LoadingContent(
+//        loading = loading,
+//        empty = expenses.isEmpty() && !loading,
+//        emptyContent = { ExpenseEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
+//        onRefresh = onRefresh
+//    ) {
+//        Column(
+//            modifier = modifier
+//                .fillMaxSize()
+//                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
+//        ) {
+//            Text(
+//                text = stringResource(currentFilteringLabel),
+//                modifier = Modifier.padding(
+//                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
+//                    vertical = dimensionResource(id = R.dimen.vertical_margin)
+//                ),
+//                style = MaterialTheme.typography.headlineSmall
+//            )
+//            LazyColumn {
+//                items(expenses) { expense ->
+//                    ExpenseItem(
+//                        expense = expense
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun ExpenseItem(

@@ -28,45 +28,45 @@ import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import com.example.android.architecture.blueprints.todoapp.contributor.data.Contributor
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
 
-@Composable
-fun ContributorListContent(
-    loading: Boolean,
-    contributors: List<Contributor>,
-    @StringRes currentFilteringLabel: Int,
-    @StringRes noTasksLabel: Int,
-    @DrawableRes noTasksIconRes: Int,
-    onRefresh: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LoadingContent(
-        loading = loading,
-        empty = contributors.isEmpty() && !loading,
-        emptyContent = { ContributorEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
-        onRefresh = onRefresh
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-        ) {
-            Text(
-                text = stringResource(currentFilteringLabel),
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
-                    vertical = dimensionResource(id = R.dimen.vertical_margin)
-                ),
-                style = MaterialTheme.typography.headlineSmall
-            )
-            LazyColumn {
-                items(contributors) { contributor ->
-                    ContributorItem(
-                        contributor = contributor
-                    )
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun ContributorListContent(
+//    loading: Boolean,
+//    contributors: List<Contributor>,
+//    @StringRes currentFilteringLabel: Int,
+//    @StringRes noTasksLabel: Int,
+//    @DrawableRes noTasksIconRes: Int,
+//    onRefresh: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    LoadingContent(
+//        loading = loading,
+//        empty = contributors.isEmpty() && !loading,
+//        emptyContent = { ContributorEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
+//        onRefresh = onRefresh
+//    ) {
+//        Column(
+//            modifier = modifier
+//                .fillMaxSize()
+//                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
+//        ) {
+//            Text(
+//                text = stringResource(currentFilteringLabel),
+//                modifier = Modifier.padding(
+//                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
+//                    vertical = dimensionResource(id = R.dimen.vertical_margin)
+//                ),
+//                style = MaterialTheme.typography.headlineSmall
+//            )
+//            LazyColumn {
+//                items(contributors) { contributor ->
+//                    ContributorItem(
+//                        contributor = contributor
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun ContributorItem(

@@ -28,7 +28,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Checkbox
@@ -104,295 +106,304 @@ fun TasksScreen(
         }
     ) { paddingValues ->
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val stats by statsViewModel.stats.collectAsStateWithLifecycle()
 
-        Column(
+        Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            val stats by statsViewModel.stats.collectAsStateWithLifecycle()
             stats?.let { monthlyStats ->
-                MonthlyStatsCard(
-                    stats = monthlyStats,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ContributorListContent(
-                    loading = false,
-                    contributors = monthlyStats.contributors,
-                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-                    noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
-                    noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
-                    onRefresh = {
-                        viewModel.refresh()
-                        statsViewModel.loadStats()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    MonthlyStatsCard(
+                        stats = monthlyStats,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    ContributorListContent(
+                        loading = false,
+                        contributors = monthlyStats.contributors,
+                        currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                        noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
+                        noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
+                        onRefresh = {
+                            viewModel.refresh()
+                            statsViewModel.loadStats()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                ExpenseListContent(
-                    loading = false,
-                    expenses = monthlyStats.expenses,
-                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-                    noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
-                    noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
-                    onRefresh = {
-                        viewModel.refresh()
-                        statsViewModel.loadStats()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            TasksContent(
-                loading = uiState.isLoading,
-                tasks = uiState.items,
-                currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-                noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
-                noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
-                onRefresh = { 
-                    viewModel.refresh()
-                    statsViewModel.loadStats()
-                },
-                onTaskClick = onTaskClick,
-                onTaskCheckedChange = viewModel::completeTask,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        // Check for user messages to display on the screen
-        uiState.userMessage?.let { message ->
-            val snackbarText = stringResource(message)
-            LaunchedEffect(snackbarHostState, viewModel, message, snackbarText) {
-                snackbarHostState.showSnackbar(snackbarText)
-                viewModel.snackbarMessageShown()
-            }
-        }
-
-        // Check if there's a userMessage to show to the user
-        val currentOnUserMessageDisplayed by rememberUpdatedState(onUserMessageDisplayed)
-        LaunchedEffect(userMessage) {
-            if (userMessage != 0) {
-                viewModel.showEditResultMessage(userMessage)
-                currentOnUserMessageDisplayed()
-            }
-        }
-    }
-}
-
-@Composable
-private fun TasksContent(
-    loading: Boolean,
-    tasks: List<Task>,
-    @StringRes currentFilteringLabel: Int,
-    @StringRes noTasksLabel: Int,
-    @DrawableRes noTasksIconRes: Int,
-    onRefresh: () -> Unit,
-    onTaskClick: (Task) -> Unit,
-    onTaskCheckedChange: (Task, Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LoadingContent(
-        loading = loading,
-        empty = tasks.isEmpty() && !loading,
-        emptyContent = { TasksEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
-        onRefresh = onRefresh
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-        ) {
-            Text(
-                text = stringResource(currentFilteringLabel),
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
-                    vertical = dimensionResource(id = R.dimen.vertical_margin)
-                ),
-                style = MaterialTheme.typography.headlineSmall
-            )
-            LazyColumn {
-                items(tasks) { task ->
-                    TaskItem(
-                        task = task,
-                        onTaskClick = onTaskClick,
-                        onCheckedChange = { onTaskCheckedChange(task, it) }
+                    ExpenseListContent(
+                        loading = false,
+                        expenses = monthlyStats.expenses,
+                        currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                        noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
+                        noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
+                        onRefresh = {
+                            viewModel.refresh()
+                            statsViewModel.loadStats()
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
+
+//            item {
+//                TasksContent(
+//                loading = uiState.isLoading,
+//                tasks = uiState.items,
+//                currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+//                noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
+//                noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
+//                onRefresh = {
+//                    viewModel.refresh()
+//                    statsViewModel.loadStats()
+//                },
+//                onTaskClick = onTaskClick,
+//                onTaskCheckedChange = viewModel::completeTask,
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//        }
+
+            // Check for user messages to display on the screen
+//        uiState.userMessage?.let { message ->
+//            val snackbarText = stringResource(message)
+//            LaunchedEffect(snackbarHostState, viewModel, message, snackbarText) {
+//                snackbarHostState.showSnackbar(snackbarText)
+//                viewModel.snackbarMessageShown()
+//            }
+//        }
+//
+//        // Check if there's a userMessage to show to the user
+//        val currentOnUserMessageDisplayed by rememberUpdatedState(onUserMessageDisplayed)
+//        LaunchedEffect(userMessage) {
+//            if (userMessage != 0) {
+//                viewModel.showEditResultMessage(userMessage)
+//                currentOnUserMessageDisplayed()
+//            }
+//        }
         }
     }
 }
-
-@Composable
-private fun TaskItem(
-    task: Task,
-    onCheckedChange: (Boolean) -> Unit,
-    onTaskClick: (Task) -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
-                vertical = dimensionResource(id = R.dimen.list_item_padding),
-            )
-            .clickable { onTaskClick(task) }
-    ) {
-        Checkbox(
-            checked = task.isCompleted,
-            onCheckedChange = onCheckedChange
-        )
-        Text(
-            text = task.titleForList,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.horizontal_margin)
-            ),
-            textDecoration = if (task.isCompleted) {
-                TextDecoration.LineThrough
-            } else {
-                null
-            }
-        )
-    }
-}
-
-@Composable
-private fun TasksEmptyContent(
-    @StringRes noTasksLabel: Int,
-    @DrawableRes noTasksIconRes: Int,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = noTasksIconRes),
-            contentDescription = stringResource(R.string.no_tasks_image_content_description),
-            modifier = Modifier.size(96.dp)
-        )
-        Text(stringResource(id = noTasksLabel))
-    }
-}
-
-@Preview
-@Composable
-private fun TasksContentPreview() {
-    MaterialTheme {
-        Surface {
-            TasksContent(
-                loading = false,
-                tasks = listOf(
-                    Task(
-                        title = "Title 1",
-                        description = "Description 1",
-                        isCompleted = false,
-                        id = "ID 1"
-                    ),
-                    Task(
-                        title = "Title 2",
-                        description = "Description 2",
-                        isCompleted = true,
-                        id = "ID 2"
-                    ),
-                    Task(
-                        title = "Title 3",
-                        description = "Description 3",
-                        isCompleted = true,
-                        id = "ID 3"
-                    ),
-                    Task(
-                        title = "Title 4",
-                        description = "Description 4",
-                        isCompleted = false,
-                        id = "ID 4"
-                    ),
-                    Task(
-                        title = "Title 5",
-                        description = "Description 5",
-                        isCompleted = true,
-                        id = "ID 5"
-                    ),
-                ),
-                currentFilteringLabel = R.string.label_all,
-                noTasksLabel = R.string.no_tasks_all,
-                noTasksIconRes = R.drawable.logo_no_fill,
-                onRefresh = { },
-                onTaskClick = { },
-                onTaskCheckedChange = { _, _ -> },
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun TasksContentEmptyPreview() {
-    MaterialTheme {
-        Surface {
-            TasksContent(
-                loading = false,
-                tasks = emptyList(),
-                currentFilteringLabel = R.string.label_all,
-                noTasksLabel = R.string.no_tasks_all,
-                noTasksIconRes = R.drawable.logo_no_fill,
-                onRefresh = { },
-                onTaskClick = { },
-                onTaskCheckedChange = { _, _ -> },
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun TasksEmptyContentPreview() {
-    TodoTheme {
-        Surface {
-            TasksEmptyContent(
-                noTasksLabel = R.string.no_tasks_all,
-                noTasksIconRes = R.drawable.logo_no_fill
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun TaskItemPreview() {
-    MaterialTheme {
-        Surface {
-            TaskItem(
-                task = Task(
-                    title = "Title",
-                    description = "Description",
-                    id = "ID"
-                ),
-                onTaskClick = { },
-                onCheckedChange = { }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun TaskItemCompletedPreview() {
-    MaterialTheme {
-        Surface {
-            TaskItem(
-                task = Task(
-                    title = "Title",
-                    description = "Description",
-                    isCompleted = true,
-                    id = "ID"
-                ),
-                onTaskClick = { },
-                onCheckedChange = { }
-            )
-        }
-    }
-}
+//
+//@Composable
+//private fun TasksContent(
+//    loading: Boolean,
+//    tasks: List<Task>,
+//    @StringRes currentFilteringLabel: Int,
+//    @StringRes noTasksLabel: Int,
+//    @DrawableRes noTasksIconRes: Int,
+//    onRefresh: () -> Unit,
+//    onTaskClick: (Task) -> Unit,
+//    onTaskCheckedChange: (Task, Boolean) -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    LoadingContent(
+//        loading = loading,
+//        empty = tasks.isEmpty() && !loading,
+//        emptyContent = { TasksEmptyContent(noTasksLabel, noTasksIconRes, modifier) },
+//        onRefresh = onRefresh
+//    ) {
+//        Column(
+//            modifier = modifier
+//                .fillMaxSize()
+//                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
+//        ) {
+//            Text(
+//                text = stringResource(currentFilteringLabel),
+//                modifier = Modifier.padding(
+//                    horizontal = dimensionResource(id = R.dimen.list_item_padding),
+//                    vertical = dimensionResource(id = R.dimen.vertical_margin)
+//                ),
+//                style = MaterialTheme.typography.headlineSmall
+//            )
+//            LazyColumn {
+//                items(tasks) { task ->
+//                    TaskItem(
+//                        task = task,
+//                        onTaskClick = onTaskClick,
+//                        onCheckedChange = { onTaskCheckedChange(task, it) }
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//private fun TaskItem(
+//    task: Task,
+//    onCheckedChange: (Boolean) -> Unit,
+//    onTaskClick: (Task) -> Unit
+//) {
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(
+//                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
+//                vertical = dimensionResource(id = R.dimen.list_item_padding),
+//            )
+//            .clickable { onTaskClick(task) }
+//    ) {
+//        Checkbox(
+//            checked = task.isCompleted,
+//            onCheckedChange = onCheckedChange
+//        )
+//        Text(
+//            text = task.titleForList,
+//            style = MaterialTheme.typography.headlineSmall,
+//            modifier = Modifier.padding(
+//                start = dimensionResource(id = R.dimen.horizontal_margin)
+//            ),
+//            textDecoration = if (task.isCompleted) {
+//                TextDecoration.LineThrough
+//            } else {
+//                null
+//            }
+//        )
+//    }
+//}
+//
+//@Composable
+//private fun TasksEmptyContent(
+//    @StringRes noTasksLabel: Int,
+//    @DrawableRes noTasksIconRes: Int,
+//    modifier: Modifier = Modifier
+//) {
+//    Column(
+//        modifier = modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Image(
+//            painter = painterResource(id = noTasksIconRes),
+//            contentDescription = stringResource(R.string.no_tasks_image_content_description),
+//            modifier = Modifier.size(96.dp)
+//        )
+//        Text(stringResource(id = noTasksLabel))
+//    }
+//}
+//
+//@Preview
+//@Composable
+//private fun TasksContentPreview() {
+//    MaterialTheme {
+//        Surface {
+//            TasksContent(
+//                loading = false,
+//                tasks = listOf(
+//                    Task(
+//                        title = "Title 1",
+//                        description = "Description 1",
+//                        isCompleted = false,
+//                        id = "ID 1"
+//                    ),
+//                    Task(
+//                        title = "Title 2",
+//                        description = "Description 2",
+//                        isCompleted = true,
+//                        id = "ID 2"
+//                    ),
+//                    Task(
+//                        title = "Title 3",
+//                        description = "Description 3",
+//                        isCompleted = true,
+//                        id = "ID 3"
+//                    ),
+//                    Task(
+//                        title = "Title 4",
+//                        description = "Description 4",
+//                        isCompleted = false,
+//                        id = "ID 4"
+//                    ),
+//                    Task(
+//                        title = "Title 5",
+//                        description = "Description 5",
+//                        isCompleted = true,
+//                        id = "ID 5"
+//                    ),
+//                ),
+//                currentFilteringLabel = R.string.label_all,
+//                noTasksLabel = R.string.no_tasks_all,
+//                noTasksIconRes = R.drawable.logo_no_fill,
+//                onRefresh = { },
+//                onTaskClick = { },
+//                onTaskCheckedChange = { _, _ -> },
+//            )
+//        }
+//    }
+//}
+//
+//@Preview
+//@Composable
+//private fun TasksContentEmptyPreview() {
+//    MaterialTheme {
+//        Surface {
+//            TasksContent(
+//                loading = false,
+//                tasks = emptyList(),
+//                currentFilteringLabel = R.string.label_all,
+//                noTasksLabel = R.string.no_tasks_all,
+//                noTasksIconRes = R.drawable.logo_no_fill,
+//                onRefresh = { },
+//                onTaskClick = { },
+//                onTaskCheckedChange = { _, _ -> },
+//            )
+//        }
+//    }
+//}
+//
+//@Preview
+//@Composable
+//private fun TasksEmptyContentPreview() {
+//    TodoTheme {
+//        Surface {
+//            TasksEmptyContent(
+//                noTasksLabel = R.string.no_tasks_all,
+//                noTasksIconRes = R.drawable.logo_no_fill
+//            )
+//        }
+//    }
+//}
+//
+//@Preview
+//@Composable
+//private fun TaskItemPreview() {
+//    MaterialTheme {
+//        Surface {
+//            TaskItem(
+//                task = Task(
+//                    title = "Title",
+//                    description = "Description",
+//                    id = "ID"
+//                ),
+//                onTaskClick = { },
+//                onCheckedChange = { }
+//            )
+//        }
+//    }
+//}
+//
+//@Preview
+//@Composable
+//private fun TaskItemCompletedPreview() {
+//    MaterialTheme {
+//        Surface {
+//            TaskItem(
+//                task = Task(
+//                    title = "Title",
+//                    description = "Description",
+//                    isCompleted = true,
+//                    id = "ID"
+//                ),
+//                onTaskClick = { },
+//                onCheckedChange = { }
+//            )
+//        }
+//    }
+//}
