@@ -59,7 +59,7 @@ import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.statistics.ContributorListContent
-import com.example.android.architecture.blueprints.todoapp.statistics.MonthlyList
+import com.example.android.architecture.blueprints.todoapp.statistics.ExpenseListContent
 import com.example.android.architecture.blueprints.todoapp.statistics.MonthlyStatsCard
 import com.example.android.architecture.blueprints.todoapp.statistics.MonthlyStatsViewModel
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ACTIVE_TASKS
@@ -128,9 +128,20 @@ fun TasksScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
 
-            MonthlyList()
+                ExpenseListContent(
+                    loading = false,
+                    expenses = monthlyStats.expenses,
+                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                    noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
+                    noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
+                    onRefresh = {
+                        viewModel.refresh()
+                        statsViewModel.loadStats()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             TasksContent(
                 loading = uiState.isLoading,

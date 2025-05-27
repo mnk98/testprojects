@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">Todo</string>
+    <string name="app_name">Cricket</string>
     <string name="add_task">New Task</string>
     <string name="edit_task">Edit Task</string>
     <string name="task_details">Task Details</string>
@@ -59,10 +59,12 @@
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
     <string name="label_all">All Contributors</string>
+    <string name="label_all_expense">All Expenses</string>
     <string name="label_active">Active Tasks</string>
     <string name="label_completed">Completed Tasks</string>
     <string name="no_tasks_all">You have no tasks!</string>
     <string name="no_contributors_all">You have no contributors!</string>
+    <string name="no_expenses_all">You have no expenses!</string>
     <string name="no_tasks_active">You have no active tasks!</string>
     <string name="no_tasks_completed">You have no completed tasks!</string>
     <string name="refresh">Refresh</string>

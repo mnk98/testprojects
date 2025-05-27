@@ -3,7 +3,6 @@ package com.example.android.architecture.blueprints.todoapp.statistics
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,16 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -34,38 +27,6 @@ import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import com.example.android.architecture.blueprints.todoapp.contributor.data.Contributor
 import com.example.android.architecture.blueprints.todoapp.util.LoadingContent
-
-@Composable
-fun MonthlyList() {
-
-    val list = listOf(
-        "C++", "C", "C#", "Java", "Kotlin", "Dart", "Python", "Javascript", "SpringBoot",
-        "XML", "Dart", "Node JS", "Typescript", "Dot Net", "GoLang", "MongoDb",
-    )
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "LazyColumn",
-            modifier = Modifier.padding(32.dp),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = TextUnit(value = 24f, type = TextUnitType.Sp)
-            ),
-            fontWeight = FontWeight.ExtraBold
-        )
-
-        // lazy column for displaying listview.
-        LazyColumn {
-            // populating items for listview.
-            items(list) { language ->
-                Text(language, modifier = Modifier.padding(15.dp))
-                HorizontalDivider()
-            }
-        }
-    }
-}
 
 @Composable
 fun ContributorListContent(
@@ -116,27 +77,20 @@ private fun ContributorItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
+//                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                 vertical = dimensionResource(id = R.dimen.list_item_padding),
             )
     ) {
         Text(
-            text = contributor.name,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.horizontal_margin)
-            ),
-        )
-        Text(
-            text = contributor.address,
-            style = MaterialTheme.typography.headlineSmall,
+            text = contributor.name+"( "+contributor.address+" )",
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(
                 start = dimensionResource(id = R.dimen.horizontal_margin)
             ),
         )
         Text(
             text = contributor.amount.toString(),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(
                 start = dimensionResource(id = R.dimen.horizontal_margin)
             ),
