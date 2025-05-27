@@ -39,8 +39,10 @@
     <string name="cd_save_task">Save task</string>
     <string name="empty_task_message">Tasks cannot be empty</string>
     <string name="successfully_saved_task_message">Task saved</string>
-    <string name="list_title">Task List</string>
+    <string name="list_title">Todo List</string>
     <string name="statistics_title">Statistics</string>
+    <string name="add_contributor">Add Contributor</string>
+    <string name="add_expense">Add Expense</string>
     <string name="statistics_no_tasks">You have no tasks.</string>
     <string name="statistics_active_tasks">Active tasks: %.1f%%</string>
     <string name="statistics_completed_tasks">Completed tasks: %.1f%%</string>

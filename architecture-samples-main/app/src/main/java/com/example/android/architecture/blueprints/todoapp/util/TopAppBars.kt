@@ -57,7 +57,9 @@ fun TasksTopAppBar(
     onFilterActiveTasks: () -> Unit,
     onFilterCompletedTasks: () -> Unit,
     onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onAddContributor: () -> Unit,
+    onAddExpense: () -> Unit
 ) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
@@ -68,7 +70,7 @@ fun TasksTopAppBar(
         },
         actions = {
             FilterTasksMenu(onFilterAllTasks, onFilterActiveTasks, onFilterCompletedTasks)
-            MoreTasksMenu(onClearCompletedTasks, onRefresh)
+            MoreTasksMenu(onClearCompletedTasks, onRefresh, onAddContributor, onAddExpense)
         },
         modifier = Modifier.fillMaxWidth()
     )
@@ -103,7 +105,9 @@ private fun FilterTasksMenu(
 @Composable
 private fun MoreTasksMenu(
     onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onAddContributor: () -> Unit,
+    onAddExpense: () -> Unit
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
@@ -117,6 +121,14 @@ private fun MoreTasksMenu(
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.refresh)) },
             onClick = { onRefresh(); closeMenu() }
+        )
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.add_contributor)) },
+            onClick = { onAddContributor(); closeMenu() }
+        )
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.add_expense)) },
+            onClick = { onAddExpense(); closeMenu() }
         )
     }
 }
@@ -188,12 +200,12 @@ fun AddEditTaskTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
     )
 }
 
-@Preview
+@Preview("Tasks screen top app bar")
 @Composable
 private fun TasksTopAppBarPreview() {
     TodoTheme {
         Surface {
-            TasksTopAppBar({}, {}, {}, {}, {}, {})
+            TasksTopAppBar({}, {}, {}, {}, {}, {}, {}, {})
         }
     }
 }

@@ -33,9 +33,10 @@ import com.example.android.architecture.blueprints.todoapp.TodoScreens.TASK_DETA
 private object TodoScreens {
     const val TASKS_SCREEN = "tasks"
     const val STATISTICS_SCREEN = "statistics"
-    const val TASK_DETAIL_SCREEN = "task"
+    const val TASK_DETAIL_SCREEN = "taskDetail"
     const val ADD_EDIT_TASK_SCREEN = "addEditTask"
     const val ADD_CONTRIBUTOR_SCREEN = "addContributor"
+    const val ADD_EXPENSE_SCREEN = "addExpense"
 }
 
 /**
@@ -51,11 +52,12 @@ object TodoDestinationsArgs {
  * Destinations used in the [TodoActivity]
  */
 object TodoDestinations {
-    const val TASKS_ROUTE = "$TASKS_SCREEN?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"
-    const val STATISTICS_ROUTE = STATISTICS_SCREEN
-    const val TASK_DETAIL_ROUTE = "$TASK_DETAIL_SCREEN/{$TASK_ID_ARG}"
-    const val ADD_EDIT_TASK_ROUTE = "$ADD_EDIT_TASK_SCREEN/{$TITLE_ARG}?$TASK_ID_ARG={$TASK_ID_ARG}"
-    const val ADD_CONTRIBUTOR_ROUTE = ADD_CONTRIBUTOR_SCREEN
+    const val TASKS_ROUTE = "${TodoScreens.TASKS_SCREEN}/?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"
+    const val STATISTICS_ROUTE = TodoScreens.STATISTICS_SCREEN
+    const val ADD_EDIT_TASK_ROUTE = "${TodoScreens.ADD_EDIT_TASK_SCREEN}/{$TITLE_ARG}?$TASK_ID_ARG={$TASK_ID_ARG}"
+    const val TASK_DETAIL_ROUTE = "${TodoScreens.TASK_DETAIL_SCREEN}/{$TASK_ID_ARG}"
+    const val ADD_CONTRIBUTOR_ROUTE = TodoScreens.ADD_CONTRIBUTOR_SCREEN
+    const val ADD_EXPENSE_ROUTE = "${TodoScreens.ADD_EXPENSE_SCREEN}?$TASK_ID_ARG={$TASK_ID_ARG}"
 }
 
 /**
@@ -66,7 +68,7 @@ class TodoNavigationActions(private val navController: NavHostController) {
     fun navigateToTasks(userMessage: Int = 0) {
         val navigatesFromDrawer = userMessage == 0
         navController.navigate(
-            TASKS_SCREEN.let {
+            TodoScreens.TASKS_SCREEN.let {
                 if (userMessage != 0) "$it?$USER_MESSAGE_ARG=$userMessage" else it
             }
         ) {
@@ -96,18 +98,21 @@ class TodoNavigationActions(private val navController: NavHostController) {
     }
 
     fun navigateToTaskDetail(taskId: String) {
-        navController.navigate("$TASK_DETAIL_SCREEN/$taskId")
-    }
-
-    fun navigateToAddEditTask(title: Int, taskId: String?) {
-        navController.navigate(
-            "$ADD_EDIT_TASK_SCREEN/$title".let {
-                if (taskId != null) "$it?$TASK_ID_ARG=$taskId" else it
-            }
-        )
+        navController.navigate("${TodoScreens.TASK_DETAIL_SCREEN}/$taskId")
     }
 
     fun navigateToAddContributor() {
         navController.navigate(TodoDestinations.ADD_CONTRIBUTOR_ROUTE)
+    }
+
+    fun navigateToAddExpense() {
+        navController.navigate(TodoDestinations.ADD_EXPENSE_ROUTE)
+    }
+
+    fun navigateToAddEditTask(title: Int, taskId: String?) {
+        navController.navigate(
+            "${TodoScreens.ADD_EDIT_TASK_SCREEN}/$title" +
+                (taskId?.let { "?$TASK_ID_ARG=$taskId" } ?: "")
+        )
     }
 }

@@ -16,6 +16,8 @@
 
 package com.example.android.architecture.blueprints.todoapp.util
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +28,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
@@ -38,6 +40,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -50,6 +54,20 @@ import com.example.android.architecture.blueprints.todoapp.TodoNavigationActions
 import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+enum class TodoDrawerItem(
+    @StringRes val title: Int,
+    @DrawableRes val iconRes: Int,
+    val route: String
+) {
+    Tasks(R.string.list_title, R.drawable.ic_list, TodoDestinations.TASKS_ROUTE),
+    Statistics(R.string.statistics_title, R.drawable.ic_statistics, TodoDestinations.STATISTICS_ROUTE),
+    AddContributor(R.string.add_contributor, R.drawable.ic_person_add, TodoDestinations.ADD_CONTRIBUTOR_ROUTE),
+    AddExpense(R.string.add_expense, R.drawable.ic_add_expense, TodoDestinations.ADD_EXPENSE_ROUTE);
+
+    @Composable
+    fun icon(): Painter = painterResource(id = iconRes)
+}
 
 @Composable
 fun AppModalDrawer(
@@ -66,6 +84,8 @@ fun AppModalDrawer(
                 currentRoute = currentRoute,
                 navigateToTasks = { navigationActions.navigateToTasks() },
                 navigateToStatistics = { navigationActions.navigateToStatistics() },
+                navigateToAddContributor = { navigationActions.navigateToAddContributor() },
+                navigateToAddExpense = { navigationActions.navigateToAddExpense() },
                 closeDrawer = { coroutineScope.launch { drawerState.close() } }
             )
         }
@@ -79,30 +99,80 @@ private fun AppDrawer(
     currentRoute: String,
     navigateToTasks: () -> Unit,
     navigateToStatistics: () -> Unit,
+    navigateToAddContributor: () -> Unit,
+    navigateToAddExpense: () -> Unit,
     closeDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(modifier = modifier.fillMaxSize()) {
             DrawerHeader()
-            DrawerButton(
-                painter = painterResource(id = R.drawable.ic_list),
-                label = stringResource(id = R.string.list_title),
-                isSelected = currentRoute == TodoDestinations.TASKS_ROUTE,
-                action = {
-                    navigateToTasks()
-                    closeDrawer()
-                }
+            DrawerItem(
+                item = TodoDrawerItem.Tasks,
+                selected = currentRoute == TodoDrawerItem.Tasks.route,
+                onItemClick = { navigateToTasks(); closeDrawer() }
             )
-            DrawerButton(
-                painter = painterResource(id = R.drawable.ic_statistics),
-                label = stringResource(id = R.string.statistics_title),
-                isSelected = currentRoute == TodoDestinations.STATISTICS_ROUTE,
-                action = {
-                    navigateToStatistics()
-                    closeDrawer()
-                }
+            DrawerItem(
+                item = TodoDrawerItem.Statistics,
+                selected = currentRoute == TodoDrawerItem.Statistics.route,
+                onItemClick = { navigateToStatistics(); closeDrawer() }
             )
+            DrawerItem(
+                item = TodoDrawerItem.AddContributor,
+                selected = currentRoute == TodoDrawerItem.AddContributor.route,
+                onItemClick = { navigateToAddContributor(); closeDrawer() }
+            )
+            DrawerItem(
+                item = TodoDrawerItem.AddExpense,
+                selected = currentRoute == TodoDrawerItem.AddExpense.route,
+                onItemClick = { navigateToAddExpense(); closeDrawer() }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DrawerItem(item: TodoDrawerItem, selected: Boolean, onItemClick: () -> Unit) {
+    val backgroundColor = if (selected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    val contentColor = if (selected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        color = backgroundColor,
+        shape = MaterialTheme.shapes.small
+    ) {
+        TextButton(
+            onClick = onItemClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = item.icon(),
+                    contentDescription = stringResource(id = item.title),
+                    colorFilter = ColorFilter.tint(contentColor),
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(16.dp))
+                Text(
+                    text = stringResource(id = item.title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = contentColor
+                )
+            }
         }
     }
 }
@@ -116,60 +186,19 @@ private fun DrawerHeader(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxWidth()
-            .background(primaryDarkColor)
             .height(dimensionResource(id = R.dimen.header_height))
             .padding(dimensionResource(id = R.dimen.header_padding))
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_no_fill),
             contentDescription =
-            stringResource(id = R.string.tasks_header_image_content_description),
+                stringResource(id = R.string.tasks_header_image_content_description),
             modifier = Modifier.width(dimensionResource(id = R.dimen.header_image_width))
         )
         Text(
             text = stringResource(id = R.string.navigation_view_header_title),
             color = MaterialTheme.colorScheme.surface
         )
-    }
-}
-
-@Composable
-private fun DrawerButton(
-    painter: Painter,
-    label: String,
-    isSelected: Boolean,
-    action: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val tintColor = if (isSelected) {
-        MaterialTheme.colorScheme.secondary
-    } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-    }
-
-    TextButton(
-        onClick = action,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                painter = painter,
-                contentDescription = null, // decorative
-                tint = tintColor
-            )
-            Spacer(Modifier.width(16.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodySmall,
-                color = tintColor
-            )
-        }
     }
 }
 
@@ -182,7 +211,10 @@ fun PreviewAppDrawer() {
                 currentRoute = TodoDestinations.TASKS_ROUTE,
                 navigateToTasks = {},
                 navigateToStatistics = {},
-                closeDrawer = {}
+                navigateToAddContributor = {},
+                navigateToAddExpense = {},
+                closeDrawer = {},
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

@@ -71,6 +71,8 @@ fun TasksScreen(
     onTaskClick: (Task) -> Unit,
     onUserMessageDisplayed: () -> Unit,
     openDrawer: () -> Unit,
+    onAddContributor: () -> Unit,
+    onAddExpense: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TasksViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
@@ -85,7 +87,9 @@ fun TasksScreen(
                 onFilterActiveTasks = { viewModel.setFiltering(ACTIVE_TASKS) },
                 onFilterCompletedTasks = { viewModel.setFiltering(COMPLETED_TASKS) },
                 onClearCompletedTasks = { viewModel.clearCompletedTasks() },
-                onRefresh = { viewModel.refresh() }
+                onRefresh = { viewModel.refresh() },
+                onAddContributor = onAddContributor,
+                onAddExpense = onAddExpense
             )
         },
         floatingActionButton = {

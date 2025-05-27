@@ -37,6 +37,7 @@ import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.
 import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.USER_MESSAGE_ARG
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskScreen
 import com.example.android.architecture.blueprints.todoapp.contributor.ui.AddContributorScreen
+import com.example.android.architecture.blueprints.todoapp.expense.ui.AddExpenseScreen
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsScreen
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailScreen
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksScreen
@@ -75,7 +76,9 @@ fun TodoNavGraph(
                     onUserMessageDisplayed = { entry.arguments?.putInt(USER_MESSAGE_ARG, 0) },
                     onAddTask = { navActions.navigateToAddContributor() },
                     onTaskClick = { task -> navActions.navigateToTaskDetail(task.id) },
-                    openDrawer = { coroutineScope.launch { drawerState.open() } }
+                    openDrawer = { coroutineScope.launch { drawerState.open() } },
+                    onAddContributor = { navActions.navigateToAddContributor() },
+                    onAddExpense = { navActions.navigateToAddExpense() }
                 )
             }
         }
@@ -114,6 +117,12 @@ fun TodoNavGraph(
 
         composable(TodoDestinations.ADD_CONTRIBUTOR_ROUTE) {
             AddContributorScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(TodoDestinations.ADD_EXPENSE_ROUTE) {
+            AddExpenseScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
