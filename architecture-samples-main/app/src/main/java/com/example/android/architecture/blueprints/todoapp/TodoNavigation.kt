@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.TASK_ID_ARG
 import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.TITLE_ARG
 import com.example.android.architecture.blueprints.todoapp.TodoDestinationsArgs.USER_MESSAGE_ARG
+import com.example.android.architecture.blueprints.todoapp.TodoScreens.ADD_CONTRIBUTOR_SCREEN
 import com.example.android.architecture.blueprints.todoapp.TodoScreens.ADD_EDIT_TASK_SCREEN
 import com.example.android.architecture.blueprints.todoapp.TodoScreens.STATISTICS_SCREEN
 import com.example.android.architecture.blueprints.todoapp.TodoScreens.TASKS_SCREEN
@@ -34,6 +35,7 @@ private object TodoScreens {
     const val STATISTICS_SCREEN = "statistics"
     const val TASK_DETAIL_SCREEN = "task"
     const val ADD_EDIT_TASK_SCREEN = "addEditTask"
+    const val ADD_CONTRIBUTOR_SCREEN = "addContributor"
 }
 
 /**
@@ -53,6 +55,7 @@ object TodoDestinations {
     const val STATISTICS_ROUTE = STATISTICS_SCREEN
     const val TASK_DETAIL_ROUTE = "$TASK_DETAIL_SCREEN/{$TASK_ID_ARG}"
     const val ADD_EDIT_TASK_ROUTE = "$ADD_EDIT_TASK_SCREEN/{$TITLE_ARG}?$TASK_ID_ARG={$TASK_ID_ARG}"
+    const val ADD_CONTRIBUTOR_ROUTE = ADD_CONTRIBUTOR_SCREEN
 }
 
 /**
@@ -102,5 +105,9 @@ class TodoNavigationActions(private val navController: NavHostController) {
                 if (taskId != null) "$it?$TASK_ID_ARG=$taskId" else it
             }
         )
+    }
+
+    fun navigateToAddContributor() {
+        navController.navigate(TodoDestinations.ADD_CONTRIBUTOR_ROUTE)
     }
 }
