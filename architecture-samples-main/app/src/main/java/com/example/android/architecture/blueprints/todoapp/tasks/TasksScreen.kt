@@ -58,6 +58,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.TodoTheme
 import com.example.android.architecture.blueprints.todoapp.data.Task
+import com.example.android.architecture.blueprints.todoapp.statistics.MonthlyStatsCard
+import com.example.android.architecture.blueprints.todoapp.statistics.MonthlyStatsViewModel
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ACTIVE_TASKS
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ALL_TASKS
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.COMPLETED_TASKS
@@ -75,6 +77,7 @@ fun TasksScreen(
     onAddExpense: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TasksViewModel = hiltViewModel(),
+    statsViewModel: MonthlyStatsViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     Scaffold(
@@ -100,17 +103,34 @@ fun TasksScreen(
     ) { paddingValues ->
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        TasksContent(
-            loading = uiState.isLoading,
-            tasks = uiState.items,
-            currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-            noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
-            noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
-            onRefresh = viewModel::refresh,
-            onTaskClick = onTaskClick,
-            onTaskCheckedChange = viewModel::completeTask,
-            modifier = Modifier.padding(paddingValues)
-        )
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            val stats by statsViewModel.stats.collectAsStateWithLifecycle()
+            stats?.let { monthlyStats ->
+                MonthlyStatsCard(
+                    stats = monthlyStats,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            
+            TasksContent(
+                loading = uiState.isLoading,
+                tasks = uiState.items,
+                currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                noTasksLabel = uiState.filteringUiInfo.noTasksLabel,
+                noTasksIconRes = uiState.filteringUiInfo.noTaskIconRes,
+                onRefresh = { 
+                    viewModel.refresh()
+                    statsViewModel.loadStats()
+                },
+                onTaskClick = onTaskClick,
+                onTaskCheckedChange = viewModel::completeTask,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         // Check for user messages to display on the screen
         uiState.userMessage?.let { message ->
